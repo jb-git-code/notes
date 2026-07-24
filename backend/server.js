@@ -24,26 +24,7 @@ app.get("/contact", (req, res) => {
 });
 
 
-app.post("/notes", (req, res) => {
-
-    console.log(req.body);
-
-    res.json({
-       
-
-    "message": "Note Created Successfully",
-
-    "note": {
-
-        "title": "Shopping",
-
-        "content": "Buy Milk"
-
-        }
-    });
-
-});
-
+app.use("/notes", notesRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
