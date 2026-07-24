@@ -18,6 +18,6 @@ router.post("/", createNote);
 
 router.delete("/:id", deleteNote);
 
-router.update("/:id", updateNote);
+router.put("/:id", updateNote);
 
 export default router;
