@@ -1,0 +1,1 @@
+// Notes Card Widget
