@@ -1,27 +1,16 @@
 import Note from "../models/note.model.js";
 import mongoose from "mongoose";
+import asyncHandler from "../utils/asyncHandler.js";
 
-export const getAllNotes = async (req, res) => {
-    try {
 
-        const notes = await Note.find();
+export const getAllNotes = asyncHandler(async(req ,res)=>{
+    const notes = await Note.find();
+    res.status(200).json(notes);
+});
 
-        res.status(200).json(notes);
 
-    } catch (error) {
-
-        res.status(500).json({
-            message: error.message
-        });
-
-    }
-};
-
-export const createNote = async (req, res) => {
-
-    try {
-
-        const { title, content } = req.body;
+export const createNote = asyncHandler(async (req , res)=>{
+    const { title, content } = req.body;
 
         if (!title || !content) {
             return res.status(400).json({
@@ -44,25 +33,13 @@ export const createNote = async (req, res) => {
             note: newNote,
 
         });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            message: error.message,
-
-        });
-
-    }
-
-};
-
-export const getNoteById = async (req, res) => {
+});
 
 
-    try {
+export const getNoteById = asyncHandler( async (req, res) => {
 
-        const { id } = req.params;
+
+    const { id } = req.params;
 
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -89,22 +66,10 @@ export const getNoteById = async (req, res) => {
 
         res.status(200).json(note);
 
-    } catch (error) {
+});
 
-        res.status(500).json({
-
-            message: error.message,
-
-        });
-
-    }
-
-};
-
-export const deleteNote = async (req, res) => {
-    try {
-
-        const { id } = req.params;
+export const deleteNote = asyncHandler( async (req, res) => {
+    const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
@@ -123,19 +88,11 @@ export const deleteNote = async (req, res) => {
         return res.status(200).json({
             message: "Note deleted successfully",
         });
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-        });
-    }
-};
+});
 
 
-export const updateNote = async (req, res) => {
-    try {
-
-        const { id } = req.params;
+export const updateNote = asyncHandler ( async(req, res) => {
+     const { id } = req.params;
         const { title, content } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -166,10 +123,4 @@ export const updateNote = async (req, res) => {
             message: "Note updated successfully",
             note: updatedNote,
         });
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-        });
-    }
-};
+});
