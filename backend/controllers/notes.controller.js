@@ -5,7 +5,11 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 export const getAllNotes = asyncHandler(async(req ,res)=>{
     const notes = await Note.find();
-    res.status(200).json(notes);
+    res.status(200).json({
+        "success":true,
+        "message": "All notes fetched succcessfully",
+        "data": notes
+    });
 });
 
 
@@ -28,10 +32,9 @@ export const createNote = asyncHandler(async (req , res)=>{
 
         res.status(201).json({
 
-            message: "Note created successfully",
-
-            note: newNote,
-
+           "success":true,
+            "message": "Note created succcessfully",
+            "data": newNote
         });
 });
 
@@ -64,7 +67,11 @@ export const getNoteById = asyncHandler( async (req, res) => {
 
         }
 
-        res.status(200).json(note);
+        res.status(200).json({
+            "success":true,
+            "message": "Note fetched succcessfully",
+            "data": note
+        });
 
 });
 
@@ -86,7 +93,9 @@ export const deleteNote = asyncHandler( async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "Note deleted successfully",
+            "success":true,
+            "message": "Note created succcessfully",
+            "data": notes
         });
 });
 
@@ -120,7 +129,8 @@ export const updateNote = asyncHandler ( async(req, res) => {
         }
 
         return res.status(200).json({
+            success:true,
             message: "Note updated successfully",
-            note: updatedNote,
+            data: updatedNote,
         });
 });

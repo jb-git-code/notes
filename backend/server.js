@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import errorHandler from "./middlewares/errorHandler.js";
 import connectDB from "./config/db.js";
 import notesRouter from "./routes/notes.routes.js";
 
@@ -17,6 +17,8 @@ app.get('/' ,(req,res)=>{
 });
 
 app.use("/notes", notesRouter);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
