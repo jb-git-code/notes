@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/createNote.dart';
@@ -20,17 +21,52 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> filterNotes = [];
   final TextEditingController _query = TextEditingController();
   bool isLoading = false;
+  bool hasError = false;
+  // True only while we're waiting out a Render cold start (first load,
+  // beyond a couple seconds) — lets the UI show a different message
+  // than a normal quick refresh.
+  bool isColdStart = false;
 
   Future<void> getNotes() async {
-    setState(() => isLoading = true);
-    final url = Uri.parse('https://notes-csk2.onrender.com/notes');
-    final response = await http.get(url);
-    final body = jsonDecode(response.body);
     setState(() {
-      notes = List<Map<String, dynamic>>.from(body["data"]);
-      filterNotes = notes;
-      isLoading = false;
+      isLoading = true;
+      hasError = false;
+      isColdStart = false;
     });
+
+    // If this takes more than ~3s, assume it's a Render free-tier cold
+    // start waking the server up, and let the UI say so.
+    final coldStartTimer = Future.delayed(const Duration(seconds: 3), () {
+      if (mounted && isLoading) setState(() => isColdStart = true);
+    });
+
+    final url = Uri.parse('https://notes-csk2.onrender.com/notes');
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 45));
+
+      if (response.statusCode != 200) {
+        throw Exception('Server returned ${response.statusCode}');
+      }
+
+      final body = jsonDecode(response.body);
+      if (!mounted) return;
+      setState(() {
+        notes = List<Map<String, dynamic>>.from(body["data"]);
+        filterNotes = notes;
+        isLoading = false;
+        isColdStart = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+        isColdStart = false;
+        hasError = true;
+      });
+    } finally {
+      // no-op; coldStartTimer just checks `isLoading` when it fires
+      unawaited(coldStartTimer);
+    }
   }
 
   void searchNotes(String query) {
@@ -68,16 +104,19 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: getNotes,
-            icon: const Icon(Icons.refresh_rounded, color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.refresh_rounded,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(
         child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
+            ? _LoadingState(isColdStart: isColdStart)
+            : hasError
+            ? _ErrorState(onRetry: getNotes)
             : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -89,44 +128,44 @@ class _HomePageState extends State<HomePage> {
                       child: notes.isEmpty
                           ? _EmptyState()
                           : filterNotes.isEmpty
-                              ? _NoResultsState()
-                              : RefreshIndicator(
-                                  color: AppColors.primary,
-                                  onRefresh: getNotes,
-                                  child: ListView.separated(
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    itemCount: filterNotes.length,
-                                    separatorBuilder: (_, __) =>
-                                        const SizedBox(height: 12),
-                                    itemBuilder: (context, index) {
-                                      final noteData = filterNotes[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Updatenote(
-                                                id: noteData["_id"],
-                                                title: noteData["title"],
-                                                content: noteData["content"],
-                                              ),
-                                            ),
-                                          ).then((_) => getNotes());
-                                        },
-                                        child: NoteCard(
-                                          title: noteData["title"],
-                                          content: noteData["content"],
-                                          onDelete: () {
-                                            Crudservice().deleteNote(
-                                              noteData["_id"],
-                                            );
-                                            getNotes();
-                                          },
+                          ? _NoResultsState()
+                          : RefreshIndicator(
+                              color: AppColors.primary,
+                              onRefresh: getNotes,
+                              child: ListView.separated(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: filterNotes.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 12),
+                                itemBuilder: (context, index) {
+                                  final noteData = filterNotes[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Updatenote(
+                                            id: noteData["_id"],
+                                            title: noteData["title"],
+                                            content: noteData["content"],
+                                          ),
                                         ),
-                                      );
+                                      ).then((_) => getNotes());
                                     },
-                                  ),
-                                ),
+                                    child: NoteCard(
+                                      title: noteData["title"],
+                                      content: noteData["content"],
+                                      onDelete: () {
+                                        Crudservice().deleteNote(
+                                          noteData["_id"],
+                                        );
+                                        getNotes();
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -184,6 +223,87 @@ class _SearchField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingState extends StatelessWidget {
+  final bool isColdStart;
+
+  const _LoadingState({required this.isColdStart});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primary),
+          if (isColdStart) ...[
+            const SizedBox(height: 20),
+            Text('Waking up the server...', style: AppTextStyles.bodyMedium),
+            const SizedBox(height: 6),
+            Text(
+              'First load can take up to a minute',
+              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _ErrorState({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 40,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Couldn\'t load your notes',
+              style: AppTextStyles.headingMedium,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Check your connection and try again',
+              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.textOnPrimary,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 12,
+                ),
+              ),
+              onPressed: onRetry,
+              child: Text('Retry', style: AppTextStyles.buttonText),
+            ),
+          ],
         ),
       ),
     );
