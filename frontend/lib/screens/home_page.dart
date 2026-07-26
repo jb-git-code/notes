@@ -1,7 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/createNote.dart';
+import 'package:frontend/screens/updateNote.dart';
+import 'package:frontend/services/crudService.dart';
 import 'package:frontend/widgets/noteCard.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,10 +45,23 @@ class _HomePageState extends State<HomePage> {
               itemCount: notes.length,
               itemBuilder: (context, index) {
                 final noteData = notes[index];
-                return NoteCard(
-                  title: noteData["title"],
-                  content: noteData["content"],
-                  onDelete: () {},
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Updatenote(id: noteData["_id"]),
+                      ),
+                    );
+                  },
+                  child: NoteCard(
+                    title: noteData["title"],
+                    content: noteData["content"],
+                    onDelete: () {
+                      Crudservice().deleteNote(noteData["_id"]);
+                      getNotes();
+                    },
+                  ),
                 );
               },
             ),
