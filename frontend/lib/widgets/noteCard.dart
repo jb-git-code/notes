@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/appColors.dart';
+import 'package:frontend/utils/appTextStyles.dart';
+
 class NoteCard extends StatelessWidget {
   final String title;
   final String content;
@@ -24,20 +27,13 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        // Flat by default — a hairline border instead of a drop shadow,
+        // to match the clean/minimal look used elsewhere in the app.
+        border: Border.all(color: AppColors.divider),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 8, 14),
@@ -49,7 +45,7 @@ class NoteCard extends StatelessWidget {
               width: 4,
               height: 44,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -60,17 +56,15 @@ class NoteCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTextStyles.headingSmall,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     content,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -80,7 +74,7 @@ class NoteCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded),
-              color: theme.colorScheme.error,
+              color: AppColors.error,
               tooltip: 'Delete',
               onPressed: () => _confirmDelete(context),
             ),
@@ -94,20 +88,33 @@ class NoteCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete note?'),
-        content: Text('This will remove "$title" permanently.'),
+        backgroundColor: AppColors.background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Delete note?', style: AppTextStyles.headingSmall),
+        content: Text(
+          'This will remove "$title" permanently.',
+          style: AppTextStyles.bodyMedium,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               onDelete();
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(
+              'Delete',
+              style: AppTextStyles.labelMedium.copyWith(color: AppColors.error),
+            ),
           ),
         ],
       ),
