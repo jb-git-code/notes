@@ -7,10 +7,11 @@ import {
     deleteNote,
     updateNote
 } from "../controllers/notes.controller.js";
+import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllNotes);
+router.get("/", protect);
 
 router.get("/:id", getNoteById);
 

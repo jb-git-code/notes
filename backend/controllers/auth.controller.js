@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import jwt from "jsonwebtoken";
 
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -68,10 +69,22 @@ export const loginUser = asyncHandler(async(req , res) => {
         });
     }
 
-    res.status(201).json({
+    const token = jwt.sign(
+        {
+            id: user._id,
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "7d",
+        }
+    );
+
+    res.status(200).json({
         success: true,
-        message: "User Logged-in successfully",
+        message: "Login successful",
+        token,
         data: {
+            id: user._id,
             name: user.name,
             email: user.email,
         },
