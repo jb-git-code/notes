@@ -11,7 +11,9 @@ import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", protect);
+router.use(protect);
+
+router.get("/",getAllNotes);
 
 router.get("/:id", getNoteById);
 

@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken";
-import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/user.model.js";
-import { getAllNotes } from "../controllers/notes.controller.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const protect = asyncHandler(async (req, res, next) => {
     const authHeader = req.headers.authorization;
-    console.log(authHeader);
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
@@ -14,10 +12,20 @@ export const protect = asyncHandler(async (req, res, next) => {
         });
     }
 
-    return res.status(200).json({
-        success:true,
-        message:'Auth Middleware established',
-        data:{}
-    });
+    const token = authHeader.split(" ")[1];
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+        return res.status(401).json({
+            success: false,
+            message: "User not found.",
+        });
+    }
+
+    req.user = user;
+
+    next();
 });

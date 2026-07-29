@@ -4,7 +4,16 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 
 export const getAllNotes = asyncHandler(async(req ,res)=>{
-    const notes = await Note.find();
+    const notes = await Note.find(
+        {owner: req.user._id,}
+    );
+
+    if(!notes){
+        return res.status(404).json({
+            success: false,
+            message: "Note not found",
+        });
+    }
     res.status(200).json({
         "success":true,
         "message": "All notes fetched succcessfully",
@@ -27,6 +36,8 @@ export const createNote = asyncHandler(async (req , res)=>{
             title,
 
             content,
+
+            owner:req.user._id,
 
         });
 
@@ -55,7 +66,10 @@ export const getNoteById = asyncHandler( async (req, res) => {
 
         }
 
-        const note = await Note.findById(id);
+        const note = await Note.findById({
+                _id: req.params.id,
+                owner: req.user._id,
+        });
 
         if (!note) {
 
