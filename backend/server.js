@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import errorHandler from "./middlewares/errorHandler.js";
 import connectDB from "./config/db.js";
 import notesRouter from "./routes/notes.routes.js";
+import authRoutes from "./routes/auth.routes.js"
 
 dotenv.config();
 
@@ -76,6 +77,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/notes", notesRouter);
+
+app.use("/auth", authRoutes);
 
 app.use(errorHandler);
 
