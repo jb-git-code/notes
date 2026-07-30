@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/createNote.dart';
-import 'package:frontend/screens/updateNote.dart';
+import 'package:frontend/screens/home/createNote.dart';
+import 'package:frontend/screens/home/updateNote.dart';
 import 'package:frontend/core/services/crudService.dart';
 import 'package:frontend/core/utils/appColors.dart';
 import 'package:frontend/core/utils/appTextStyles.dart';
