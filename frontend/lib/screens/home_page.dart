@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/createNote.dart';
 import 'package:frontend/screens/updateNote.dart';
-import 'package:frontend/services/crudService.dart';
-import 'package:frontend/utils/appColors.dart';
-import 'package:frontend/utils/appTextStyles.dart';
+import 'package:frontend/core/services/crudService.dart';
+import 'package:frontend/core/utils/appColors.dart';
+import 'package:frontend/core/utils/appTextStyles.dart';
 import 'package:frontend/widgets/noteCard.dart';
 import 'package:http/http.dart' as http;
 
