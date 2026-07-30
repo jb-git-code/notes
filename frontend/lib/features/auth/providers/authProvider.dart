@@ -3,6 +3,8 @@ import 'package:frontend/core/exceptions/apiExceptions.dart';
 import 'package:frontend/features/auth/providers/authState.dart';
 import 'package:frontend/features/auth/repositories/authRepository.dart';
 
+final authProvider = NotifierProvider<AuthNotifier,AuthState>(AuthNotifier.new,);
+
 class AuthNotifier extends Notifier<AuthState> {
   final _repository = AuthRepository();
 
