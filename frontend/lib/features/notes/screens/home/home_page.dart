@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/home/createNote.dart';
-import 'package:frontend/screens/home/updateNote.dart';
+import 'package:frontend/features/notes/screens/home/createNote.dart';
+import 'package:frontend/features/notes/screens/home/updateNote.dart';
 import 'package:frontend/core/services/crudService.dart';
 import 'package:frontend/core/utils/appColors.dart';
 import 'package:frontend/core/utils/appTextStyles.dart';
-import 'package:frontend/widgets/noteCard.dart';
+import 'package:frontend/features/notes/widgets/noteCard.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
