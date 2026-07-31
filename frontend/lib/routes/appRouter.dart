@@ -17,7 +17,7 @@ class AppRouter {
 
       GoRoute(
         path: AppRoutes.home,
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => const HomeScreen(),
       ),
 
       GoRoute(
@@ -26,7 +26,7 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: AppRoutes.register,
+        path: AppRoutes.splash,
         builder: (context, state) => const AuthGate(),
       ),
     ],

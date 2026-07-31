@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/exceptions/apiExceptions.dart';
-import 'package:frontend/features/auth/models/userModel.dart';
 import 'package:frontend/features/auth/providers/authRepositoryProvider.dart';
 import 'package:frontend/features/auth/providers/authState.dart';
 import 'package:frontend/features/auth/repositories/authRepository.dart';

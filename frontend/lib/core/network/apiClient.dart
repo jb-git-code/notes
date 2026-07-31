@@ -1,10 +1,31 @@
 import 'package:dio/dio.dart';
+import 'package:frontend/core/services/authStorage.dart';
 
 import '../constants/apiConstants.dart';
 
 class ApiClient {
   ApiClient._() {
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await AuthStorage.instance.getToken();
+
+          if (token != null) {
+            options.headers["Authorization"] = "Bearer $token";
+          }
+
+          return handler.next(options);
+        },
+
+        onError: (e, handler) async {
+          if (e.response?.statusCode == 401) {
+            await AuthStorage.instance.clear();
+          }
+
+          return handler.next(e);
+        },
+      ),
+    );
   }
 
   static final ApiClient instance = ApiClient._();

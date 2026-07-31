@@ -1,18 +1,17 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/utils/appColors.dart';
 import 'package:frontend/core/utils/appTextStyles.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/features/notes/providers/notesProvider.dart';
 
-
-class Createnote extends StatefulWidget {
+class Createnote extends ConsumerStatefulWidget {
   const Createnote({super.key});
 
   @override
-  State<Createnote> createState() => _CreatenoteState();
+  ConsumerState<Createnote> createState() => _CreatenoteState();
 }
 
-class _CreatenoteState extends State<Createnote> {
+class _CreatenoteState extends ConsumerState<Createnote> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _message = TextEditingController();
 
@@ -20,28 +19,22 @@ class _CreatenoteState extends State<Createnote> {
 
   Future<void> createNote() async {
     if (_title.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add a title')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please add a title')));
       return;
     }
 
-    setState(() => isLoading = true);
-    final url = Uri.parse('https://notes-csk2.onrender.com/notes');
     try {
-      await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "title": _title.text.trim(),
-          "content": _message.text,
-        }),
+      final noteState = ref.read(notesProvider.notifier);
+      await noteState.addNote(
+        title: _title.text.trim(),
+        content: _message.text,
       );
       if (!mounted) return;
-      setState(() => isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Note added')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Note added')));
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;

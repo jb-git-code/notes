@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/services/crudService.dart';
 import 'package:frontend/core/utils/appColors.dart';
 import 'package:frontend/core/utils/appTextStyles.dart';
+import 'package:frontend/features/notes/models/noteModel.dart';
+import 'package:frontend/features/notes/providers/notesProvider.dart';
 
-class Updatenote extends StatefulWidget {
-  const Updatenote({
-    super.key,
-    required this.id,
-    required this.title,
-    required this.content,
-  });
-  final String id;
-  final String title;
-  final String content;
+class Updatenote extends ConsumerStatefulWidget {
+  const Updatenote({super.key, required this.note});
+  final NoteModel note;
 
   @override
-  State<Updatenote> createState() => _UpdatenoteState();
+  ConsumerState<Updatenote> createState() => _UpdatenoteState();
 }
 
-class _UpdatenoteState extends State<Updatenote> {
+class _UpdatenoteState extends ConsumerState<Updatenote> {
   late final TextEditingController _title;
   late final TextEditingController _message;
 
@@ -27,10 +23,8 @@ class _UpdatenoteState extends State<Updatenote> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill fields with the existing note — previously left empty,
-    // which meant saving would wipe the note's title/content.
-    _title = TextEditingController(text: widget.title);
-    _message = TextEditingController(text: widget.content);
+    _title = TextEditingController(text: widget.note.title);
+    _message = TextEditingController(text: widget.note.content);
   }
 
   Future<void> updateCurrentNote() async {
@@ -41,15 +35,13 @@ class _UpdatenoteState extends State<Updatenote> {
       return;
     }
 
-    setState(() => isLoading = true);
     try {
-      await Crudservice().updateNote(
-        _title.text.trim(),
-        _message.text,
-        widget.id,
+      final noteState = ref.read(notesProvider.notifier);
+      await noteState.updateNote(
+        id: widget.note.id,
+        title: _title.text.trim(),
+        content: _message.text,
       );
-      if (!mounted) return;
-      setState(() => isLoading = false);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Note updated')));
