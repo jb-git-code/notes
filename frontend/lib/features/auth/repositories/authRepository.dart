@@ -7,9 +7,9 @@ import '../../../core/services/authStorage.dart';
 import '../models/loginResponse.dart';
 
 class AuthRepository {
-  final Dio _dio = ApiClient.instance.dio;
+  final Dio _dio = ApiClient.instance.dio; // later di using riverpod
 
-  final AuthStorage _storage = AuthStorage.instance;
+  final AuthStorage _storage = AuthStorage.instance;// later di using riverpod
 
   Future<LoginResponse> login({
     required String email,

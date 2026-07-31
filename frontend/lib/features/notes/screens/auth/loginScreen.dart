@@ -50,6 +50,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
@@ -58,6 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 labelText: "Email",
               ),
             ),
+            const SizedBox(height: 24),
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -66,6 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 labelText: "Password",
               ),
             ),
+            const SizedBox(height: 24),
             TextButton(
               onPressed: (authState.isLoading)
                   ? null

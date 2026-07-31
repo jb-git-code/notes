@@ -1,15 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/exceptions/apiExceptions.dart';
+import 'package:frontend/features/auth/providers/authRepositoryProvider.dart';
 import 'package:frontend/features/auth/providers/authState.dart';
 import 'package:frontend/features/auth/repositories/authRepository.dart';
 
-final authProvider = NotifierProvider<AuthNotifier,AuthState>(AuthNotifier.new,);
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);
 
 class AuthNotifier extends Notifier<AuthState> {
-  final _repository = AuthRepository();
+  late AuthRepository _repository;
 
   @override
   AuthState build() {
+    _repository = ref.read(authRepositoryProvider);
     return const AuthState();
   }
 
