@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/exceptions/apiExceptions.dart';
+import 'package:frontend/features/auth/models/userModel.dart';
 import 'package:frontend/features/auth/providers/authRepositoryProvider.dart';
 import 'package:frontend/features/auth/providers/authState.dart';
 import 'package:frontend/features/auth/repositories/authRepository.dart';
@@ -27,6 +28,18 @@ class AuthNotifier extends Notifier<AuthState> {
       );
 
       state = state.copyWith(isLoading: false, user: response.data);
+    } on ApiException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.message);
+    } catch (_) {
+      state = state.copyWith(isLoading: false, error: "Something went wrong.");
+    }
+  }
+
+  Future<void> register(String name, String email, String password) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final response = await _repository.register(name: name, email: email, password: password);
+      state = state.copyWith(isLoading: false, user:response.data);
     } on ApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
     } catch (_) {

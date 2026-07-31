@@ -4,17 +4,19 @@ import 'package:frontend/features/auth/providers/authState.dart';
 import 'package:frontend/features/auth/providers/authprovider.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
 
   final _passwordController = TextEditingController();
+
+  final _nameController = TextEditingController();
 
   @override
   void initState() {
@@ -39,8 +41,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login(String email, String pass) async {
-    await ref.read(authProvider.notifier).login(email, pass);
+  Future<void> _register(String name, String email, String password) async {
+    await ref.read(authProvider.notifier).register(name, email, password);
   }
 
   @override
@@ -53,6 +55,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Name",
+              ),
+            ),
+            const SizedBox(height: 24),
+            TextField(
               controller: _emailController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -62,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             const SizedBox(height: 24),
             TextField(
               controller: _passwordController,
-              obscureText: true,
+              obscureText: false,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Password",
@@ -73,20 +83,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: (authState.isLoading)
                   ? null
                   : () {
-                      _login(
+                      _register(
+                        _nameController.text.trim(),
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
                       );
                     },
               child: (authState.isLoading)
                   ? Center(child: CircularProgressIndicator())
-                  : Text('Login'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context.go('/register');
-              },
-              child: Text('Register'),
+                  : Text('Register'),
             ),
           ],
         ),

@@ -35,6 +35,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         success: true,
         message: "User registered successfully",
         data: {
+            id: user.id,
             name: user.name,
             email: user.email,
         },
@@ -75,7 +76,7 @@ export const loginUser = asyncHandler(async(req , res) => {
         },
         process.env.JWT_SECRET,
         {
-            expiresIn: "7d",
+            expiresIn: process.env.JWT_EXPIRES_IN,
         }
     );
 
