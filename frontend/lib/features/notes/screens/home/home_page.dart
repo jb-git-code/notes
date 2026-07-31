@@ -4,6 +4,7 @@ import 'package:frontend/features/notes/providers/notesProvider.dart';
 import 'package:frontend/features/notes/providers/notesState.dart';
 import 'package:frontend/features/notes/screens/home/createNote.dart';
 import 'package:frontend/features/notes/screens/home/updateNote.dart';
+import 'package:frontend/features/notes/widgets/noteCard.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -57,6 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       );
     }
+
     return RefreshIndicator(
       onRefresh: () async {
         await ref.read(notesProvider.notifier).fetchNotes();
@@ -74,23 +76,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 MaterialPageRoute(builder: (context) => Updatenote(note: note)),
               );
             },
-            child: Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: ListTile(
-                title: Text(note.title),
-                subtitle: Text(
-                  note.content,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: IconButton(
-                  onPressed: () async {
-                    final noteState = ref.read(notesProvider.notifier);
-                    await noteState.deleteNote(note.id);
-                  },
-                  icon: Icon(Icons.delete),
-                ),
-              ),
+            child: NoteCard(
+              title: note.title,
+              content: note.content,
+              onDelete: () async {
+                final noteState = ref.read(notesProvider.notifier);
+                await noteState.deleteNote(note.id);
+              },
             ),
           );
         },
