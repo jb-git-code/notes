@@ -1,3 +1,4 @@
+import 'package:frontend/features/auth/screens/authGate.dart';
 import 'package:frontend/features/notes/screens/auth/loginScreen.dart';
 import 'package:frontend/features/notes/screens/auth/registerScreen.dart';
 import 'package:frontend/features/notes/screens/home/home_page.dart';
@@ -6,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
 
     routes: [
       GoRoute(
@@ -22,6 +23,11 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.register,
         builder: (context, state) => const RegisterScreen(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const AuthGate(),
       ),
     ],
   );

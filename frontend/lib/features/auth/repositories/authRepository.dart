@@ -90,4 +90,9 @@ class AuthRepository {
   Future<String?> getToken() async {
     return await _storage.getToken();
   }
+
+  Future<bool> hasToken() async {
+    final token = await _storage.getToken();
+    return token != null;
+  }
 }

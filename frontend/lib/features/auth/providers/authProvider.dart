@@ -27,7 +27,12 @@ class AuthNotifier extends Notifier<AuthState> {
         password: password,
       );
 
-      state = state.copyWith(isLoading: false, user: response.data);
+      state = state.copyWith(
+        isLoading: false,
+        user: response.data,
+        isAuthenticated: true,
+        error: null,
+      );
     } on ApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
     } catch (_) {
@@ -38,8 +43,12 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> register(String name, String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final response = await _repository.register(name: name, email: email, password: password);
-      state = state.copyWith(isLoading: false, user:response.data);
+      final response = await _repository.register(
+        name: name,
+        email: email,
+        password: password,
+      );
+      state = state.copyWith(isLoading: false, user: response.data);
     } on ApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
     } catch (_) {
@@ -50,5 +59,9 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> logout() async {
     await _repository.logout();
     state = const AuthState();
+  }
+
+  Future<bool> hasToken() async {
+    return _repository.hasToken();
   }
 }
