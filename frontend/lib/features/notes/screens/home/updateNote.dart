@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/core/services/crudService.dart';
-import 'package:frontend/core/utils/appColors.dart';
-import 'package:frontend/core/utils/appTextStyles.dart';
+import 'package:frontend/features/constants/appColors.dart';
+import 'package:frontend/features/constants/appTextStyles.dart';
 import 'package:frontend/features/notes/models/noteModel.dart';
 import 'package:frontend/features/notes/providers/notesProvider.dart';
 
@@ -28,6 +27,9 @@ class _UpdatenoteState extends ConsumerState<Updatenote> {
   }
 
   Future<void> updateCurrentNote() async {
+    setState(() {
+      isLoading = true;
+    });
     if (_title.text.trim().isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -42,6 +44,9 @@ class _UpdatenoteState extends ConsumerState<Updatenote> {
         title: _title.text.trim(),
         content: _message.text,
       );
+      setState(() {
+        isLoading = false;
+      });
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Note updated')));

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/utils/appColors.dart';
-import 'package:frontend/core/utils/appTextStyles.dart';
+import 'package:frontend/features/constants/appColors.dart';
+import 'package:frontend/features/constants/appTextStyles.dart';
 
 class NoteCard extends StatelessWidget {
   final String title;
@@ -31,8 +31,6 @@ class NoteCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        // Flat by default — a hairline border instead of a drop shadow,
-        // to match the clean/minimal look used elsewhere in the app.
         border: Border.all(color: AppColors.divider),
       ),
       child: Padding(
@@ -40,16 +38,15 @@ class NoteCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Small accent bar for visual interest
-            Container(
-              width: 4,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(width: 12),
+            // Container(
+            //   width: 4,
+            //   height: 44,
+            //   decoration: BoxDecoration(
+            //     color: AppColors.primary,
+            //     borderRadius: BorderRadius.circular(4),
+            //   ),
+            // ),
+            // const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +71,7 @@ class NoteCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded),
-              color: AppColors.error,
+              color: AppColors.danger,
               tooltip: 'Delete',
               onPressed: () => _confirmDelete(context),
             ),
@@ -110,10 +107,12 @@ class NoteCard extends StatelessWidget {
               Navigator.pop(ctx);
               onDelete();
             },
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
             child: Text(
               'Delete',
-              style: AppTextStyles.labelMedium.copyWith(color: AppColors.error),
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.danger,
+              ),
             ),
           ),
         ],
