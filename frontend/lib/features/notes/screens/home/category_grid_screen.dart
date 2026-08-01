@@ -25,6 +25,78 @@ class NotesCategoryGridScreen extends ConsumerWidget {
       }).length;
     }
 
+    Widget body;
+    if (notesState.isLoading) {
+      body = Center(child: CircularProgressIndicator(color: AppColors.primary));
+    } else if (notesState.error != null) {
+      body = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, color: AppColors.danger, size: 40),
+              const SizedBox(height: 12),
+              Text(
+                notesState.error!,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => ref.read(notesProvider.notifier).fetchNotes(),
+                child: Text(
+                  'Retry',
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      body = GridView.count(
+        padding: const EdgeInsets.all(16),
+        crossAxisCount: 2,
+        mainAxisSpacing: 14,
+        crossAxisSpacing: 14,
+        childAspectRatio: 1.15,
+        children: [
+          _CategoryTile(
+            label: 'All Notes',
+            icon: Icons.grid_view_rounded,
+            color: AppColors.primary,
+            count: countFor(null),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const CategoryNotesScreen(
+                  categoryId: null,
+                  title: 'All Notes',
+                ),
+              ),
+            ),
+          ),
+          for (final cat in NoteCategories.all)
+            _CategoryTile(
+              label: cat.label,
+              icon: cat.icon,
+              color: cat.color,
+              count: countFor(cat.id),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      CategoryNotesScreen(categoryId: cat.id, title: cat.label),
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -32,50 +104,7 @@ class NotesCategoryGridScreen extends ConsumerWidget {
         elevation: 0,
         title: Text('My Notes', style: AppTextStyles.headingSmall),
       ),
-      body: notesState.isLoading
-          ? Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            )
-          : GridView.count(
-              padding: const EdgeInsets.all(16),
-              crossAxisCount: 2,
-              mainAxisSpacing: 14,
-              crossAxisSpacing: 14,
-              childAspectRatio: 1.15,
-              children: [
-                _CategoryTile(
-                  label: 'All Notes',
-                  icon: Icons.grid_view_rounded,
-                  color: AppColors.primary,
-                  count: countFor(null),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const CategoryNotesScreen(
-                        categoryId: null,
-                        title: 'All Notes',
-                      ),
-                    ),
-                  ),
-                ),
-                for (final cat in NoteCategories.all)
-                  _CategoryTile(
-                    label: cat.label,
-                    icon: cat.icon,
-                    color: cat.color,
-                    count: countFor(cat.id),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CategoryNotesScreen(
-                          categoryId: cat.id,
-                          title: cat.label,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+      body: body,
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,

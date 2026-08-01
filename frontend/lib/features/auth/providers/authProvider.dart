@@ -2,18 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/exceptions/apiExceptions.dart';
 import 'package:frontend/features/auth/providers/authRepositoryProvider.dart';
 import 'package:frontend/features/auth/providers/authState.dart';
-import 'package:frontend/features/auth/repositories/authRepository.dart';
+import 'package:frontend/features/notes/providers/notesProvider.dart';
 
 final authProvider = NotifierProvider<AuthNotifier, AuthState>(
   AuthNotifier.new,
 );
 
 class AuthNotifier extends Notifier<AuthState> {
-  late AuthRepository _repository;
-
   @override
   AuthState build() {
-    _repository = ref.read(authRepositoryProvider);
     return const AuthState();
   }
 
@@ -21,10 +18,10 @@ class AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final response = await _repository.login(
-        email: email,
-        password: password,
-      );
+      final response = await ref
+          .read(authRepositoryProvider)
+          .login(email: email, password: password);
+      ref.invalidate(notesProvider);
 
       state = state.copyWith(
         isLoading: false,
@@ -42,11 +39,9 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> register(String name, String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final response = await _repository.register(
-        name: name,
-        email: email,
-        password: password,
-      );
+      final response = await ref
+          .read(authRepositoryProvider)
+          .register(name: name, email: email, password: password);
       state = state.copyWith(isLoading: false, user: response.data);
     } on ApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
@@ -56,11 +51,12 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> logout() async {
-    await _repository.logout();
+    await ref.read(authRepositoryProvider).logout();
+    ref.invalidate(notesProvider);
     state = const AuthState();
   }
 
   Future<bool> hasToken() async {
-    return _repository.hasToken();
+    return ref.read(authRepositoryProvider).hasToken();
   }
 }

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/features/auth/providers/authprovider.dart';
 import 'package:frontend/features/constants/appColors.dart';
 import 'package:frontend/features/constants/appTextStyles.dart';
-import 'package:frontend/features/notes/screens/auth/loginScreen.dart';
 import 'package:frontend/features/theme/theme_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -30,11 +30,8 @@ class SettingsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () async {
               await ref.read(authProvider.notifier).logout();
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-                ((route) => false),
-              );
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (context.mounted) context.go('/login');
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.danger),
             child: Text(
@@ -63,12 +60,10 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider),
-            ),
+          Material(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            clipBehavior: Clip.antiAlias,
             child: SwitchListTile(
               value: isDark,
               onChanged: (_) => ref.read(themeProvider.notifier).toggle(),
@@ -81,12 +76,10 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider),
-            ),
+          Material(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            clipBehavior: Clip.antiAlias,
             child: ListTile(
               onTap: () => _logOut(context, ref),
               leading: Icon(Icons.logout_rounded, color: AppColors.danger),

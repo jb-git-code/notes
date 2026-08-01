@@ -36,8 +36,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         );
       }
-      if (next.user != null) {
-        context.go("/home");
+      if (next.user != null && previous?.user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Account created! Please log in.',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textOnPrimary,
+              ),
+            ),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+        context.go("/login");
       }
     });
   }
