@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/features/constants/appColors.dart';
 import 'package:frontend/features/constants/appTextStyles.dart';
+import 'package:frontend/features/notes/local/note_meta_provider.dart';
+import 'package:frontend/features/notes/models/note_category.dart';
 import 'package:frontend/features/notes/providers/notesProvider.dart';
+import 'package:frontend/features/notes/widgets/category_chip.dart';
 
 class Createnote extends ConsumerStatefulWidget {
-  const Createnote({super.key});
+  const Createnote({super.key, this.initialCategoryId});
+  final String? initialCategoryId;
 
   @override
   ConsumerState<Createnote> createState() => _CreatenoteState();
@@ -14,8 +18,15 @@ class Createnote extends ConsumerStatefulWidget {
 class _CreatenoteState extends ConsumerState<Createnote> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _message = TextEditingController();
+  late String _selectedCategoryId;
 
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategoryId = widget.initialCategoryId ?? NoteCategories.uncategorized;
+  }
 
   Future<void> createNote() async {
     if (_title.text.trim().isEmpty) {
@@ -33,6 +44,17 @@ class _CreatenoteState extends ConsumerState<Createnote> {
         title: _title.text.trim(),
         content: _message.text,
       );
+
+      final notes = ref.read(notesProvider).notes;
+      if (notes.isNotEmpty) {
+        final created = notes.reduce(
+          (a, b) => a.createdAt.isAfter(b.createdAt) ? a : b,
+        );
+        await ref
+            .read(noteMetaProvider.notifier)
+            .setCategory(created.id, _selectedCategoryId);
+      }
+
       setState(() {
         isLoading = false;
       });
@@ -93,11 +115,38 @@ class _CreatenoteState extends ConsumerState<Createnote> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: AppColors.primary,
                       width: 1.5,
                     ),
                   ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 40,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    CategoryChip(
+                      label: 'None',
+                      color: AppColors.textSecondary,
+                      selected: _selectedCategoryId == NoteCategories.uncategorized,
+                      onTap: () => setState(
+                        () => _selectedCategoryId = NoteCategories.uncategorized,
+                      ),
+                    ),
+                    for (final cat in NoteCategories.all)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: CategoryChip(
+                          label: cat.label,
+                          color: cat.color,
+                          selected: _selectedCategoryId == cat.id,
+                          onTap: () => setState(() => _selectedCategoryId = cat.id),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -122,7 +171,7 @@ class _CreatenoteState extends ConsumerState<Createnote> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                         color: AppColors.primary,
                         width: 1.5,
                       ),
@@ -144,7 +193,7 @@ class _CreatenoteState extends ConsumerState<Createnote> {
                   ),
                   onPressed: isLoading ? null : createNote,
                   child: isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(

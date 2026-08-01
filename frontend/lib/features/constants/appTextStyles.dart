@@ -6,14 +6,14 @@ class AppTextStyles {
   AppTextStyles._();
 
   // Crafty Girls — handwritten, playful, used for titles
-  static TextStyle headingLarge = GoogleFonts.craftyGirls(
+  static TextStyle get headingLarge => GoogleFonts.craftyGirls(
     fontSize: 30,
     fontWeight: FontWeight.w700,
     color: AppColors.text,
     height: 1.3,
   );
 
-  static TextStyle headingSmall = GoogleFonts.craftyGirls(
+  static TextStyle get headingSmall => GoogleFonts.craftyGirls(
     fontSize: 20,
     fontWeight: FontWeight.w700,
     color: AppColors.text,
@@ -21,28 +21,28 @@ class AppTextStyles {
   );
 
   // Manrope — elegant, clean sans for body/subtitle text
-  static TextStyle bodyLarge = GoogleFonts.manrope(
+  static TextStyle get bodyLarge => GoogleFonts.manrope(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.text,
     height: 1.5,
   );
 
-  static TextStyle bodyMedium = GoogleFonts.manrope(
+  static TextStyle get bodyMedium => GoogleFonts.manrope(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.text,
     height: 1.5,
   );
 
-  static TextStyle labelMedium = GoogleFonts.manrope(
+  static TextStyle get labelMedium => GoogleFonts.manrope(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.text,
     height: 1.2,
   );
 
-  static TextStyle buttonText = GoogleFonts.manrope(
+  static TextStyle get buttonText => GoogleFonts.manrope(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,

@@ -6,12 +6,18 @@ class NoteCard extends StatelessWidget {
   final String title;
   final String content;
   final VoidCallback onDelete;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteToggle;
+  final Color? categoryColor;
 
   const NoteCard({
     super.key,
     required this.title,
     required this.content,
     required this.onDelete,
+    this.isFavorite = false,
+    this.onFavoriteToggle,
+    this.categoryColor,
   });
 
   factory NoteCard.fromJson(
@@ -34,19 +40,11 @@ class NoteCard extends StatelessWidget {
         border: Border.all(color: AppColors.divider),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 8, 14),
+        padding: const EdgeInsets.fromLTRB(0, 14, 8, 14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Container(
-            //   width: 4,
-            //   height: 44,
-            //   decoration: BoxDecoration(
-            //     color: AppColors.primary,
-            //     borderRadius: BorderRadius.circular(4),
-            //   ),
-            // ),
-            // const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +67,17 @@ class NoteCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (onFavoriteToggle != null)
+              IconButton(
+                icon: Icon(
+                  isFavorite
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                ),
+                color: isFavorite ? AppColors.danger : AppColors.textSecondary,
+                tooltip: isFavorite ? 'Unfavorite' : 'Favorite',
+                onPressed: onFavoriteToggle,
+              ),
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded),
               color: AppColors.danger,
@@ -87,9 +96,9 @@ class NoteCard extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete note?', style: AppTextStyles.headingSmall),
+        title: Text('Move to Trash?', style: AppTextStyles.headingSmall),
         content: Text(
-          'This will remove "$title" permanently.',
+          '"$title" will be moved to Trash.',
           style: AppTextStyles.bodyMedium,
         ),
         actions: [
@@ -109,7 +118,7 @@ class NoteCard extends StatelessWidget {
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.danger),
             child: Text(
-              'Delete',
+              'Move',
               style: AppTextStyles.labelMedium.copyWith(
                 color: AppColors.danger,
               ),
