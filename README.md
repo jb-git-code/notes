@@ -1,6 +1,11 @@
 <div align="center">
 
 <img src="./frontend/assets/appPoster.png" alt="Cleno - a calmer way to keep your thoughts" width="100%" />
+<p align="center">
+  <img src="./frontend/assets/screenshots/login.png" width="200" />
+  <img src="./frontend/assets/screenshots/home.png" width="200" />
+  <img src="./frontend/assets/screenshots/dark_mode.png" width="200" />
+</p>
 
 </div>
 
