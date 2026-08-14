@@ -24,7 +24,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.12.0'   # apne pubspec.yaml ke SDK constraint se match karein
+          flutter-version: '3.44.0'
           channel: 'stable'
           cache: true
 
@@ -52,7 +52,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.12.0'
+          flutter-version: '3.44.0'
           channel: 'stable'
           cache: true
 
