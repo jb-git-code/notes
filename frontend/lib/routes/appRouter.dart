@@ -1,6 +1,6 @@
 import 'package:frontend/features/auth/screens/authGate.dart';
-import 'package:frontend/features/notes/screens/auth/loginScreen.dart';
-import 'package:frontend/features/notes/screens/auth/registerScreen.dart';
+import 'package:frontend/features/auth/screens/loginScreen.dart';
+import 'package:frontend/features/auth/screens/registerScreen.dart';
 import 'package:frontend/features/notes/screens/home/home_page.dart';
 import 'package:frontend/routes/appRoutes.dart';
 import 'package:go_router/go_router.dart';

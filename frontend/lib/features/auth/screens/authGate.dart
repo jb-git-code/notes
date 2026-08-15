@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/features/auth/providers/authprovider.dart';
+import 'package:frontend/features/auth/providers/authProvider.dart';
 import 'package:frontend/routes/appRoutes.dart';
 import 'package:go_router/go_router.dart';
 
