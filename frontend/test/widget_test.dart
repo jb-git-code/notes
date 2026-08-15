@@ -33,11 +33,7 @@ void main() {
     // Wrap MyApp in a ProviderScope since the app uses Riverpod for state
     // management. Without this, any widget that calls ref.watch/ref.read
     // will throw "Bad state: No ProviderScope found".
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MyApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     // Just verify the app renders without throwing any exceptions.
     // Add more specific widget assertions here as your test suite grows.
