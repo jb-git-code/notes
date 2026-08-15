@@ -1,30 +1,46 @@
-// This is a basic Flutter widget test.
+// This is a basic smoke test to verify the app builds without crashing.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// For more information on testing widgets, see:
+// https://docs.flutter.dev/cookbook/testing/widget/introduction
 
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_test/hive_test.dart';
 
+import 'package:frontend/core/local/hive_boxes.dart';
 import 'package:frontend/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUp(() async {
+    // Sets up an in-memory Hive instance for tests, so we don't touch
+    // the real on-disk database and don't need path_provider mocking.
+    await setUpTestHive();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Open every box the app expects to already be open by the time
+    // MyApp builds. If a box stores a custom typed object (e.g. NoteMeta),
+    // its Hive TypeAdapter must be registered here too — otherwise
+    // this open call (or a later typed access) will throw.
+    await Hive.openBox(HiveBoxes.noteMeta);
+    await Hive.openBox(HiveBoxes.settings);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  tearDown(() async {
+    await tearDownTestHive();
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('App builds without crashing', (WidgetTester tester) async {
+    // Wrap MyApp in a ProviderScope since the app uses Riverpod for state
+    // management. Without this, any widget that calls ref.watch/ref.read
+    // will throw "Bad state: No ProviderScope found".
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MyApp(),
+      ),
+    );
+
+    // Just verify the app renders without throwing any exceptions.
+    // Add more specific widget assertions here as your test suite grows.
+    expect(tester.takeException(), isNull);
   });
 }
