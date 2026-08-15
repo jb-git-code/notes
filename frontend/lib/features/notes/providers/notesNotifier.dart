@@ -3,7 +3,6 @@ import 'package:frontend/core/exceptions/apiExceptions.dart';
 import 'package:frontend/features/notes/providers/notesProvider.dart';
 import 'package:frontend/features/notes/providers/notesState.dart';
 
-
 class NotesNotifier extends Notifier<NotesState> {
   @override
   NotesState build() {

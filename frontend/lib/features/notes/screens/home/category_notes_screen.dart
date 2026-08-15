@@ -13,7 +13,7 @@ import 'package:frontend/features/notes/screens/home/updateNote.dart';
 import 'package:frontend/features/notes/widgets/noteCard.dart';
 
 class CategoryNotesScreen extends ConsumerWidget {
-  final String? categoryId; 
+  final String? categoryId;
   final String title;
 
   const CategoryNotesScreen({
@@ -66,9 +66,7 @@ class CategoryNotesScreen extends ConsumerWidget {
     NoteMetaNotifier metaNotifier,
   ) {
     if (state.isLoading) {
-      return  Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      );
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
     }
 
     if (state.error != null) {
@@ -78,7 +76,7 @@ class CategoryNotesScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-               Icon(Icons.error_outline, color: AppColors.danger, size: 40),
+              Icon(Icons.error_outline, color: AppColors.danger, size: 40),
               const SizedBox(height: 12),
               Text(
                 state.error!,
@@ -159,7 +157,8 @@ class CategoryNotesScreen extends ConsumerWidget {
                         action: SnackBarAction(
                           label: 'Undo',
                           textColor: AppColors.accent,
-                          onPressed: () => metaNotifier.restoreFromTrash(note.id),
+                          onPressed: () =>
+                              metaNotifier.restoreFromTrash(note.id),
                         ),
                       ),
                     );

@@ -14,7 +14,6 @@ abstract class LoginResponse with _$LoginResponse {
     required UserModel data,
   }) = _LoginResponse;
 
-  factory LoginResponse.fromJson(
-      Map<String, dynamic> json) =>
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
       _$LoginResponseFromJson(json);
 }

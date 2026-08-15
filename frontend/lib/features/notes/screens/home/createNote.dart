@@ -25,7 +25,8 @@ class _CreatenoteState extends ConsumerState<Createnote> {
   @override
   void initState() {
     super.initState();
-    _selectedCategoryId = widget.initialCategoryId ?? NoteCategories.uncategorized;
+    _selectedCategoryId =
+        widget.initialCategoryId ?? NoteCategories.uncategorized;
   }
 
   Future<void> createNote() async {
@@ -131,9 +132,11 @@ class _CreatenoteState extends ConsumerState<Createnote> {
                     CategoryChip(
                       label: 'None',
                       color: AppColors.textSecondary,
-                      selected: _selectedCategoryId == NoteCategories.uncategorized,
+                      selected:
+                          _selectedCategoryId == NoteCategories.uncategorized,
                       onTap: () => setState(
-                        () => _selectedCategoryId = NoteCategories.uncategorized,
+                        () =>
+                            _selectedCategoryId = NoteCategories.uncategorized,
                       ),
                     ),
                     for (final cat in NoteCategories.all)
@@ -143,7 +146,8 @@ class _CreatenoteState extends ConsumerState<Createnote> {
                           label: cat.label,
                           color: cat.color,
                           selected: _selectedCategoryId == cat.id,
-                          onTap: () => setState(() => _selectedCategoryId = cat.id),
+                          onTap: () =>
+                              setState(() => _selectedCategoryId = cat.id),
                         ),
                       ),
                   ],

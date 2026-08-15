@@ -70,7 +70,8 @@ class FavoritesScreen extends ConsumerWidget {
                       content: note.content,
                       isFavorite: true,
                       categoryColor: NoteCategories.byId(meta.categoryId).color,
-                      onFavoriteToggle: () => metaNotifier.toggleFavorite(note.id),
+                      onFavoriteToggle: () =>
+                          metaNotifier.toggleFavorite(note.id),
                       onDelete: () async {
                         await metaNotifier.moveToTrash(note.id);
                         if (context.mounted) {

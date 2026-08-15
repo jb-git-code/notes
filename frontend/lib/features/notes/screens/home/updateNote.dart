@@ -103,12 +103,15 @@ class _UpdatenoteState extends ConsumerState<Updatenote> {
         actions: [
           IconButton(
             icon: Icon(
-              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
             ),
             color: isFavorite ? AppColors.danger : AppColors.textSecondary,
             tooltip: isFavorite ? 'Unfavorite' : 'Favorite',
-            onPressed: () =>
-                ref.read(noteMetaProvider.notifier).toggleFavorite(widget.note.id),
+            onPressed: () => ref
+                .read(noteMetaProvider.notifier)
+                .toggleFavorite(widget.note.id),
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline_rounded),
@@ -160,9 +163,11 @@ class _UpdatenoteState extends ConsumerState<Updatenote> {
                     CategoryChip(
                       label: 'None',
                       color: AppColors.textSecondary,
-                      selected: _selectedCategoryId == NoteCategories.uncategorized,
+                      selected:
+                          _selectedCategoryId == NoteCategories.uncategorized,
                       onTap: () => setState(
-                        () => _selectedCategoryId = NoteCategories.uncategorized,
+                        () =>
+                            _selectedCategoryId = NoteCategories.uncategorized,
                       ),
                     ),
                     for (final cat in NoteCategories.all)
@@ -172,7 +177,8 @@ class _UpdatenoteState extends ConsumerState<Updatenote> {
                           label: cat.label,
                           color: cat.color,
                           selected: _selectedCategoryId == cat.id,
-                          onTap: () => setState(() => _selectedCategoryId = cat.id),
+                          onTap: () =>
+                              setState(() => _selectedCategoryId = cat.id),
                         ),
                       ),
                   ],

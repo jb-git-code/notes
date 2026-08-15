@@ -13,7 +13,6 @@ abstract class RegisterResponse with _$RegisterResponse {
     required UserModel data,
   }) = _RegisterResponse;
 
-  factory RegisterResponse.fromJson(
-      Map<String, dynamic> json) =>
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
       _$RegisterResponseFromJson(json);
 }

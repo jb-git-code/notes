@@ -12,7 +12,6 @@ class AuthGate extends ConsumerStatefulWidget {
 }
 
 class _AuthGateState extends ConsumerState<AuthGate> {
-
   @override
   void initState() {
     super.initState();
@@ -20,9 +19,7 @@ class _AuthGateState extends ConsumerState<AuthGate> {
   }
 
   Future<void> _checkAuth() async {
-
-    final hasToken =
-        await ref.read(authProvider.notifier).hasToken();
+    final hasToken = await ref.read(authProvider.notifier).hasToken();
 
     if (!mounted) return;
 
@@ -35,10 +32,6 @@ class _AuthGateState extends ConsumerState<AuthGate> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
