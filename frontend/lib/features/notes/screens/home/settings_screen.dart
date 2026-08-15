@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/features/auth/providers/authprovider.dart';
+import 'package:frontend/features/auth/providers/authProvider.dart';
 import 'package:frontend/features/constants/appColors.dart';
 import 'package:frontend/features/constants/appTextStyles.dart';
 import 'package:frontend/features/theme/theme_provider.dart';
